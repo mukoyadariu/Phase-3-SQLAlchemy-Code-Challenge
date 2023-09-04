@@ -1,45 +1,58 @@
-from model import Restaurant, Customer, Review, session
+from models import Restaurant, Customer, Review, session
 from sqlalchemy.orm.exc import NoResultFound
+
 
 def create_sample_data():
     restaurant_a = Restaurant(name="Restaurant A", price=3)
     restaurant_b = Restaurant(name="Restaurant B", price=2)
     customer_john = Customer(first_name="John", last_name="Doe")
     customer_jane = Customer(first_name="Jane", last_name="Smith")
-    review1 = Review(customer=customer_john, restaurant=restaurant_a, star_rating=5)
-    review2 = Review(customer=customer_john, restaurant=restaurant_b, star_rating=4)
-    review3 = Review(customer=customer_jane, restaurant=restaurant_a, star_rating=3)
+    review1 = Review(customer=customer_john,
+                     restaurant=restaurant_a, star_rating=5)
+    review2 = Review(customer=customer_john,
+                     restaurant=restaurant_b, star_rating=4)
+    review3 = Review(customer=customer_jane,
+                     restaurant=restaurant_a, star_rating=3)
 
 
-
-session.add_all([restaurant1, restaurant2, customer1, customer2, review1, review2, review3])
+session.add_all([restaurant1, restaurant2, customer1,
+                customer2, review1, review2, review3])
 session.commit()
+
+
 def get_fanciest_restaurant():
     fanciest_restaurant = Restaurant.fanciest(session)
     return fanciest_restaurant
 
+
 def get_reviews_for_restaurant(restaurant_name):
-    restaurant = session.query(Restaurant).filter_by(name=restaurant_name).first()
+    restaurant = session.query(Restaurant).filter_by(
+        name=restaurant_name).first()
     if restaurant:
         return restaurant.all_reviews()
     else:
         return []
+
 
 def create_new_customer(first_name, last_name):
     new_customer = Customer(first_name=first_name, last_name=last_name)
     session.add(new_customer)
     session.commit()
 
+
 def add_review_for_restaurant(customer_id, restaurant_name, star_rating):
-    restaurant = session.query(Restaurant).filter_by(name=restaurant_name).first()
+    restaurant = session.query(Restaurant).filter_by(
+        name=restaurant_name).first()
     if restaurant:
         customer = session.query(Customer).filter_by(id=customer_id).first()
         if customer:
-            new_review = Review(customer=customer, restaurant=restaurant, star_rating=star_rating)
+            new_review = Review(customer=customer,
+                                restaurant=restaurant, star_rating=star_rating)
             session.add(new_review)
             session.commit()
             return True
     return False
+
 
 def find_favorite_restaurant(customer_id):
     customer = session.query(Customer).filter_by(id=customer_id).first()
@@ -47,16 +60,20 @@ def find_favorite_restaurant(customer_id):
         return customer.favorite_restaurant(session)
     return None
 
+
 def delete_reviews_by_customer_for_restaurant(customer_id, restaurant_name):
     customer = session.query(Customer).filter_by(id=customer_id).first()
-    restaurant = session.query(Restaurant).filter_by(name=restaurant_name).first()
+    restaurant = session.query(Restaurant).filter_by(
+        name=restaurant_name).first()
     if customer and restaurant:
         customer.delete_reviews(session, restaurant)
         session.commit()
 
+
 def has_customer_reviewed_restaurant(customer_id, restaurant_name):
     customer = session.query(Customer).filter_by(id=customer_id).first()
-    restaurant = session.query(Restaurant).filter_by(name=restaurant_name).first()
+    restaurant = session.query(Restaurant).filter_by(
+        name=restaurant_name).first()
     if customer and restaurant:
         return session.query(Review).filter(
             Review.customer_id == customer.id,
@@ -64,11 +81,14 @@ def has_customer_reviewed_restaurant(customer_id, restaurant_name):
         ).first() is not None
     return False
 
+
 def get_customers_for_restaurant(restaurant_name):
-    restaurant = session.query(Restaurant).filter_by(name=restaurant_name).first()
+    restaurant = session.query(Restaurant).filter_by(
+        name=restaurant_name).first()
     if restaurant:
         return restaurant.customers()
     return []
+
 
 def update_customer_name(customer_id, new_first_name):
     customer = session.query(Customer).filter_by(id=customer_id).first()
@@ -76,11 +96,14 @@ def update_customer_name(customer_id, new_first_name):
         customer.first_name = new_first_name
         session.commit()
 
+
 def get_review_count_for_restaurant(restaurant_name):
-    restaurant = session.query(Restaurant).filter_by(name=restaurant_name).first()
+    restaurant = session.query(Restaurant).filter_by(
+        name=restaurant_name).first()
     if restaurant:
         return session.query(Review).filter_by(restaurant_id=restaurant.id).count()
     return 0
+
 
 if name == "main":
     create_sample_data()
