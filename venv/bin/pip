@@ -1,5 +1,5 @@
 #!/bin/sh
-'''exec' "/home/darius/Desktop/MORINGA/phase 3/Phase-3-SQLAlchemy-Code-Challenge/venv/bin/python3" "$0" "$@"
+'''exec' "/home/darius/Desktop/MORINGA/phase 3/Phase-3-SQLAlchemy-Code-Challenge/venv/bin/python" "$0" "$@"
 ' '''
 # -*- coding: utf-8 -*-
 import re
